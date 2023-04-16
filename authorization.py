@@ -14,9 +14,9 @@ def register():
         password1 = request.form.get("password1")
         password2 = request.form.get("password2")
         db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(email=email).first()
+        user = db_sess.query(User).filter(User.email == email).first()
         if user:
-            flash("Аккаунт с данным email уже существует.")
+            flash("Аккаунт с данным email уже существует.", category="error")
         elif len(email) < 4:
             flash("Неверный формат электронной почты.", category="error")
         elif len(firstname) < 2:
@@ -45,16 +45,17 @@ def login():
         email = request.form.get("email")
         password = request.form.get("password")
         db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(email=email).first()
+        user = db_sess.query(User).filter(User.email == email).first()
         if user:
             if check_password_hash(user.password, password):
                 flash("Вы успешно вошли в аккаунт!", category="success")
                 return redirect(url_for("view.homepage"))
             else:
                 flash("Неверный пароль, попробуйте снова.", category="error")
+        else:
+            flash("Пользователя с указанным email не существует.", category="error")
         db_sess.close()
-    else:
-        flash("Пользователя с указанным email не существует.", category="error")
+    return render_template("login.html")
 
 
 @auth.route("/logout")
