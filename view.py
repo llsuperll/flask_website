@@ -134,9 +134,15 @@ def maps():
             address = request.form.get("address")
             ll, spn = get_ll_spn(address)
             ll_spn = f"ll={ll}&spn={spn}"
-            point_param = f"pt={ll}"
-            get_map(ll_spn, "map", add_params=point_param)
+            point_param = f"pt={ll},pm2bl"
+            map_type = request.form.get("map_t")
+            get_map(ll_spn, map_type, add_params=point_param)
         except Exception:
             redirect("/maps")
             flash("Неверные данные", category="error")
     return render_template("ya_maps.html", user=current_user, place=address)
+
+
+@view.route("/cabinet", methods=["GET", "POST"])
+def personal_cabinet():
+    return render_template("cabinet.html", user=current_user)
