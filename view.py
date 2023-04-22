@@ -5,6 +5,8 @@ from data import db_session
 from forms.news import NewsForm
 from data.news import News
 import json
+import os
+from geocode import get_ll_spn, get_map
 
 view = Blueprint("view", __name__)
 
@@ -117,3 +119,24 @@ def news_delete(news_id):
     else:
         abort(404)
     return redirect('/news')
+
+
+@view.route('/maps', methods=['GET', 'POST'])
+@login_required
+def maps():
+    try:
+        os.remove("static/img/map.png")
+    except OSError:
+        pass
+    address = "адрес/место"
+    if request.method == "POST":
+        try:
+            address = request.form.get("address")
+            ll, spn = get_ll_spn(address)
+            ll_spn = f"ll={ll}&spn={spn}"
+            point_param = f"pt={ll}"
+            get_map(ll_spn, "map", add_params=point_param)
+        except Exception:
+            redirect("/maps")
+            flash("Неверные данные", category="error")
+    return render_template("ya_maps.html", user=current_user, place=address)

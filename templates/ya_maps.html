@@ -1,0 +1,26 @@
+{% extends "base.html" %} {% block title %}Maps{% endblock %}
+
+{% block content %}
+<div class="form-group" align="center">
+	<h2>Место на карте</h2>
+	<h4>Это - {{ place }}</h4>
+	<img src="/static/img/map.png" alt="здесь будет запрошенное место">
+</div>
+<form method="POST">
+	<div class="form-group" align="center">
+        <label for="address">Адрес/Место</label>
+        <input type="text"
+               id="address"
+               class="form-control"
+               name="address"
+               placeholder="Введите адрес места"
+        />
+		<p><b>Выберите тип карты</b></p>
+		<p><input name="map_t" type="radio" value="map" checked>Карта</p>
+		<p><input name="map_t" type="radio" value="sat">Спутник</p>
+		<p><input name="map_t" type="radio" value="sat,skl">Гибрид</p>
+		<br />
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </div>
+</form>
+{% endblock %}
