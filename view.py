@@ -181,6 +181,7 @@ def personal_cabinet():
 
 
 @view.route("/find_info", methods=["GET", "POST"])
+@login_required
 def find_info():
     data_found = ""
     if request.method == "POST":
