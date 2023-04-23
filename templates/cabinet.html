@@ -2,4 +2,34 @@
 
 {% block content %}
 <h1>Личный кабинет</h1>
+<br />
+<div class="form-group">
+	<h4>Имя: {{ user.first_name }}</h4>
+	<h4>Почта: {{ user.email }}</h4>
+	<h4>Количество ваших новостей: {{ news_amount }}</h4>
+	<a href="/reset-password" class="btn btn-warning">Сменить пароль</a>
+	<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">Удалить аккаунт</button>
+</div>
+
+<form method="POST">
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel">Подтверждение действия</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        <h6>Вы действительно хотите удалить аккаунт?</h6>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+	        <button type="submit" class="btn btn-danger">Удалить аккаунт</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+</form>
 {% endblock %}

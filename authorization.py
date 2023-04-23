@@ -65,3 +65,26 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("auth.login"))
+
+
+@auth.route("/reset-password", methods=["GET", "POST"])
+@login_required
+def reset_password():
+    if request.method == "POST":
+        old_password = request.form.get("password")
+        new_password = request.form.get("r_password")
+        if check_password_hash(current_user.password, old_password) and len(new_password) > 7:
+            new_psw = generate_password_hash(new_password, method="sha256")
+            db_sess = db_session.create_session()
+            user = db_sess.query(User).filter(User.id == current_user.id).first()
+            user.password = new_psw
+            db_sess.commit()
+            flash("Пароль успешно изменён!", category="success")
+            return redirect(url_for("view.personal_cabinet"))
+        elif not check_password_hash(current_user.password, old_password):
+            flash("Неверный старый пароль", category="error")
+        else:
+            flash("Новый пароль слишком короткий", category="error")
+
+    return render_template("reset_password.html", user=current_user)
+

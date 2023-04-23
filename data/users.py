@@ -10,5 +10,5 @@ class User(SqlAlchemyBase, UserMixin):
     email = sqlalchemy.Column(sqlalchemy.String, unique=True)
     password = sqlalchemy.Column(sqlalchemy.String)
     first_name = sqlalchemy.Column(sqlalchemy.String)
-    notes = orm.relationship("Note")
+    notes = orm.relationship("Note", back_populates="user")
     news = orm.relationship("News", back_populates='user')

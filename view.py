@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, flash, jsonify, redirect, abort
+from flask import Blueprint, render_template, request, flash, jsonify, redirect, abort, url_for
 from flask_login import login_required, current_user
 from data.notes import Note
+from data.users import User
 from data import db_session
 from forms.news import NewsForm
 from data.news import News
@@ -14,6 +15,7 @@ view = Blueprint("view", __name__)
 @view.route("/", methods=["GET", "POST"])
 @login_required
 def homepage():
+    # добавляем заметку
     if request.method == "POST":
         note = request.form.get("note")
         if len(note) < 3:
@@ -23,7 +25,8 @@ def homepage():
             new_note.data = note
             new_note.user_id = current_user.id
             db_sess = db_session.create_session()
-            db_sess.add(new_note)
+            current_user.notes.append(new_note)
+            db_sess.merge(current_user)
             db_sess.commit()
             flash("Заметка успешно добавлена!", category="success")
     return render_template("home.html", user=current_user)
@@ -144,5 +147,27 @@ def maps():
 
 
 @view.route("/cabinet", methods=["GET", "POST"])
+@login_required
 def personal_cabinet():
-    return render_template("cabinet.html", user=current_user)
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter(News.user == current_user)
+    news_amount = len(list(news))
+    if request.method == "POST":
+        user = db_sess.query(User).filter(User.id == current_user.id).first()
+        news = db_sess.query(News).filter(News.user == current_user)
+        notes = db_sess.query(Note).filter(Note.user == current_user)
+        if news:
+            for new in news:
+                db_sess.delete(new)
+                db_sess.commit()
+        if notes:
+            for note in notes:
+                db_sess.delete(note)
+                db_sess.commit()
+        if user:
+            db_sess.delete(user)
+            db_sess.commit()
+        flash("Аккаунт был удалён.", category="success")
+        return redirect(url_for("auth.login"))
+
+    return render_template("cabinet.html", user=current_user, news_amount=news_amount)
