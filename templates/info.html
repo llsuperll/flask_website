@@ -1,0 +1,46 @@
+{% extends "base.html" %}{% block title %}Info search{% endblock %}
+
+{% block content %}
+<h1>Поиск информации</h1>
+<br />
+<form method="POST">
+	<div class="form-group">
+        <label for="info">О чём вы хотели бы узнать?</label>
+        <input type="text"
+               id="info"
+               class="form-control"
+               name="info"
+               placeholder="Введите ключевое слово(слова)"/>
+        <br />
+	    <button type="submit" class="btn btn-primary">Отправить</button>
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal">?</button>
+    </div>
+</form>
+
+<!-- Всплывающее окно с информацией -->
+<form method="POST">
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel">Информация</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        <h6>Поиск осуществляется по сайту wikipedia</h6>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Ок</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+</form>
+
+<div class="form-group">
+	<h5>Вот что мы нашли:</h5>
+	<p>{{ data_found }}</p>
+</div>
+{% endblock %}

@@ -7,6 +7,7 @@ from forms.news import NewsForm
 from data.news import News
 import json
 import os
+import wikipedia
 from geocode import get_ll_spn, get_map
 
 view = Blueprint("view", __name__)
@@ -177,3 +178,14 @@ def personal_cabinet():
         return redirect(url_for("auth.login"))
 
     return render_template("cabinet.html", user=current_user, news_amount=news_amount)
+
+
+@view.route("/find_info", methods=["GET", "POST"])
+def find_info():
+    data_found = ""
+    if request.method == "POST":
+        data = request.form.get("info")
+        wikipedia.set_lang("ru")
+        page = wikipedia.page(data)
+        data_found = page.summary
+    return render_template("info.html", user=current_user, data_found=data_found)
