@@ -8,6 +8,7 @@ from data.users import User
 DB_NAME = "database.db"
 
 
+# инициализация приложения
 def create_app():
     app = Flask(__name__)
     app.config["SECRET_KEY"] = "Leha_secret"

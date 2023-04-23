@@ -48,6 +48,7 @@ def delete_note():
 @view.route("/news")
 @login_required
 def news_check():
+    # функция для показа новостей пользователям
     db_sess = db_session.create_session()
     if current_user.is_authenticated:
         news = db_sess.query(News).filter(
@@ -80,6 +81,7 @@ def add_news():
 def edit_news(news_id):
     form = NewsForm()
     if request.method == "GET":
+        # переход на страничку изменения новости
         db_sess = db_session.create_session()
         news = db_sess.query(News).filter(News.id == news_id,
                                           News.user == current_user
@@ -91,6 +93,7 @@ def edit_news(news_id):
         else:
             abort(404)
     if form.validate_on_submit():
+        # редактирование новости (метод запроса POST)
         db_sess = db_session.create_session()
         news = db_sess.query(News).filter(News.id == news_id,
                                           News.user == current_user
@@ -127,6 +130,7 @@ def news_delete(news_id):
 @view.route('/maps', methods=['GET', 'POST'])
 @login_required
 def maps():
+    # удаляем картинку с прошлым изображением, если она есть
     try:
         os.remove("static/img/map.png")
     except OSError:
@@ -142,7 +146,7 @@ def maps():
             get_map(ll_spn, map_type, add_params=point_param)
         except Exception:
             redirect("/maps")
-            flash("Неверные данные", category="error")
+            flash("Неверные данные.", category="error")
     return render_template("ya_maps.html", user=current_user, place=address)
 
 
@@ -153,9 +157,11 @@ def personal_cabinet():
     news = db_sess.query(News).filter(News.user == current_user)
     news_amount = len(list(news))
     if request.method == "POST":
+        # удаление аккаунта
         user = db_sess.query(User).filter(User.id == current_user.id).first()
         news = db_sess.query(News).filter(News.user == current_user)
         notes = db_sess.query(Note).filter(Note.user == current_user)
+        # удаляем все новости, заметки пользователя, а затем и его из базы данных
         if news:
             for new in news:
                 db_sess.delete(new)

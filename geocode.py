@@ -3,6 +3,7 @@ import requests
 API_KEY = "40d1649f-0493-4b70-98ba-98533de7710b"
 
 
+# находим координаты объекта по названию
 def geocode(address):
     geocoder_request = f"http://geocode-maps.yandex.ru/1.x/"
     geocoder_params = {
@@ -17,6 +18,7 @@ def geocode(address):
     return features[0]["GeoObject"]
 
 
+# получаем координаты объекта
 def get_coordinates(address):
     toponym = geocode(address)
     toponym_coords = toponym["Point"]["pos"]
@@ -24,6 +26,7 @@ def get_coordinates(address):
     return float(long), float(lat)
 
 
+# находим протяженность области показа карты по долготе и широте (в градусах)
 def get_ll_spn(address):
     toponym = geocode(address)
     toponym_coords = toponym["Point"]["pos"]
@@ -38,6 +41,7 @@ def get_ll_spn(address):
     return ll, span
 
 
+# получаем картинку местности
 def get_map(ll_spn=None, map_type="map", add_params=None):
     if ll_spn:
         map_request = f"http://static-maps.yandex.ru/1.x/?{ll_spn}&l={map_type}"

@@ -10,12 +10,14 @@ auth = Blueprint("auth", __name__)
 @auth.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
+        # получаем данные из формы
         email = request.form.get("email")
         firstname = request.form.get("firstname")
         password1 = request.form.get("password1")
         password2 = request.form.get("password2")
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == email).first()
+        # проверяем все данные на валидность
         if user:
             flash("Аккаунт с данным email уже существует.", category="error")
         elif len(email) < 4:
@@ -87,4 +89,3 @@ def reset_password():
             flash("Новый пароль слишком короткий", category="error")
 
     return render_template("reset_password.html", user=current_user)
-
